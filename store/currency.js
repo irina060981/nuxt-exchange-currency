@@ -6,6 +6,7 @@ export const actions = {
   updateRateData ( context ) {
     this.$currencyDataFixtures.updateRateData()
     context.commit('incrementUpdated')
+
   }
 }
 

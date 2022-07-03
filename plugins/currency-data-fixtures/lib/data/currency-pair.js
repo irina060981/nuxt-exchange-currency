@@ -38,19 +38,33 @@ export default class CurrencyPair {
    * @returns Array[String]
    */
   static createAllPairs () {
+    const allCur = StaticData.currencyArray
     let result = []
 
-    for(let i=0; i< StaticData.currencyArray.length; i++) {
-      const curBase = StaticData.currencyArray[i]
+    for(let i=0; i< allCur.length; i++) {
+      const curBase = allCur[i]
 
-      for(let j=0; j< StaticData.currencyArray.length; j++) {
+      for(let j=0; j< allCur.length; j++) {
         if (i===j) { continue; }
-        const curQuote = StaticData.currencyArray[j]
+        const curQuote = allCur[j]
 
         result.push(CurrencyPair.formatPairName(curBase, curQuote))
       }
     }
 
     return result
+  }
+
+  static createAllUniquePairs () {
+    const allCur = StaticData.currencyArray
+
+    return allCur.reduce( (acc, v, i) =>
+      acc.concat(allCur.slice(i+1).map( w => this.formatPairName(v, w) )),
+    [])
+  }
+
+  static reversePair (pair) {
+    const currencies = pair.split('-').reverse()    
+    return this.formatPairName(currencies[0], currencies[1])
   }
 }

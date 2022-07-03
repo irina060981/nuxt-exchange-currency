@@ -5,6 +5,7 @@ import CurrencyRateGenerator from './generators/currency-rate-generator.js'
 import CurrencyPair from './data/currency-pair.js'
 import StaticData from '../static-data.js'
 
+let lastUsedRates = []
 export default class ModuleController {
 
   /**
@@ -20,7 +21,7 @@ export default class ModuleController {
   initCurrencyData () {
     this.currencyData = {}
 
-    const currencyData = CurrencyStaticGenerator.allCurrencyPairsCommissions
+    const currencyData = this.allCurrencyPairsCommissions
     currencyData.forEach(item => {
         this.currencyData[item.pair] = new CurrencyPair(item.pair)
         this.currencyData[item.pair].setCommission(item.commission)
@@ -40,6 +41,8 @@ export default class ModuleController {
         this.currencyData[item.pair].setRate(item.rate)
       }
     })
+
+    lastUsedRates = rateData
   }
 
   get availableCurrency () {
@@ -49,4 +52,15 @@ export default class ModuleController {
   formatCurrencyToPair (baseCur, quoteCur) {
     return CurrencyPair.formatPairName (baseCur, quoteCur)
   }
+
+  // for check page
+  get allCurrencyPairsCommissions () {
+    return CurrencyStaticGenerator.allCurrencyPairsCommissions
+  }
+
+  // for check page
+  get recalcCurrencyPairsCommission () {
+    return lastUsedRates
+  }
+ 
 }

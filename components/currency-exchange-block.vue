@@ -3,41 +3,46 @@
       div.crypto-exchange_block_container.col-md-5
         h2 Exchange {{ baseCurrency }} to {{ quoteCurrency }}
         div.crypto-exchange_input_block_container
+
           p.crypto-label You Pay
-          CurrencyInput( mode = "base" :excludeCurrency = "quoteCurrency" :calcValue = "baseAmount" @updateCurrencyAmount = "updateBaseCurrencyAmount" @updateCurrencyItem = "updateBaseCurrencyItem" )
+
+          div.crypto-exchange_input_block.input-group
+            CurrencyInput( placeholder="Pay Amount" @updateValue = "updateValueBase" :externalValue = "updateBaseAmount")
+            select.crypto-currency_list.form-control( v-model="baseCurrency")
+                option(v-for="currencyItem in availableBaseCurrency" :key="currencyItem") {{ currencyItem }}
           p.crypto-input_description Available: 0 {{ baseCurrency }}
 
           p.crypto-arrows_icon_container.d-flex.justify-content-end
             span.crypto-arrows_icon( @click="exchangeCurrency" )
             
           p.crypto-label You Get
-          CurrencyInput( mode = "quote" :excludeCurrency = "baseCurrency" :calcValue = "quoteAmount"  @updateCurrencyAmount = "updateQuoteCurrencyAmount" @updateCurrencyItem = "updateQuoteCurrencyItem" )
+
+          div.crypto-exchange_input_block.input-group
+            CurrencyInput( placeholder="Pay Amount" @updateValue = "updateValueQuote" :externalValue = "updateQuoteAmount")
+            select.crypto-currency_list.form-control( v-model="quoteCurrency")
+                option(v-for="currencyItem in availableQuoteCurrency" :key="currencyItem") {{ currencyItem }}
           p.crypto-input_description Available: 0 {{ quoteCurrency }}
 
       div.crypto-exchange_block_container.col-md-6
         h2 Summary
         div.crypto-info_container.container
           p.row.justify-content-between
-            span.col-sm-6.crypto-label_part Your {{ baseCurrency }} Balance
-            span.col-sm-6.crypto-value_part 0 {{ baseCurrency }}
-          p.row.justify-content-between
-            span.col-sm-6.crypto-label_part Your {{ quoteCurrency }} Balance
-            span.col-sm-6.crypto-value_part 0 {{ quoteCurrency }}  
-          p.row.justify-content-between
-            span.col-sm-6.crypto-label_part Exchange Rate ({{ baseCurrency }} -> {{ quoteCurrency }})
-            span.col-sm-6.crypto-value_part {{ exchangeRateDirect }}
+            span.col-sm-6.crypto-label_part Exchange Rate
+            span.col-sm-6.crypto-value_part 1{{ baseCurrency }} = {{ exchangeRateDirect }} {{ quoteCurrency }} 
           p.row.justify-content-between
             span.col-sm-6.crypto-label_part Exchange Commission ({{ baseCurrency }} -> {{ quoteCurrency }})
             span.col-sm-6.crypto-value_part {{ exchangeCommissionDirect }}%
           p.row.justify-content-between
-            span.col-sm-6.crypto-label_part Exchange Rate ({{ quoteCurrency }} -> {{ baseCurrency }})
-            span.col-sm-6.crypto-value_part {{ exchangeRateBack }}
+            span.col-sm-6.crypto-label_part Exchange Rate
+            span.col-sm-6.crypto-value_part 1{{ quoteCurrency }} = {{ exchangeRateBack }} {{ baseCurrency }}
           p.row.justify-content-between
             span.col-sm-6.crypto-label_part Exchange Commission ({{ quoteCurrency }} -> {{ baseCurrency }})
             span.col-sm-6.crypto-value_part {{ exchangeCommissionBack }}%
           p.row.justify-content-between
             span.col-sm-6.crypto-label_part Update Counter
             span.col-sm-6.crypto-value_part {{ updated }}
+          p.crypto-button_block
+            button.btn.btn-primary.btn-block(@click="exchange") Exchange
 </template>
 <script>
 export default {
@@ -48,25 +53,38 @@ export default {
       quoteCurrency: null,
 
       baseAmount: undefined,
-      quoteAmount: undefined
+      quoteAmount: undefined,
+
+      updateBaseAmount: undefined,
+      updateQuoteAmount: undefined,
+
+      rateUpdateInterval: null
     }
   },
   watch: {
-    'this.$store.state.currency.updated' () {
-      this.reCalculateQuote()
+    updated () {
+      this.recalculateQuote()
     }
   },
   mounted () {
-    // this.initCurrencyChoice()
+    this.baseCurrency = this.allAvailableCurrency[0]
+    this.quoteCurrency = this.allAvailableCurrency[1]
 
-    /*
-    setInterval(() => {
-    // setTimeout(() => {
+    this.rateUpdateInterval = setInterval(() => {
       this.updateRateData()
     }, 10000)
-    */
+
   },
   computed: {
+    allAvailableCurrency () {
+      return this.$currencyDataFixtures.availableCurrency
+    },
+    availableBaseCurrency () {
+        return this.allAvailableCurrency.filter(currency => currency != this.quoteCurrency)
+    },
+    availableQuoteCurrency () {
+        return this.allAvailableCurrency.filter(currency => currency != this.baseCurrency)
+    },
     updated () {
       return this.$store.state.currency.updated
     },
@@ -108,55 +126,51 @@ export default {
     }
   },
   methods: {
+    calcAmount (amount, rate, commisison) {
+      return amount ? Math.floor(amount * rate * (1 - commisison/100)*100)/100 : undefined
+    },
     updateRateData () {
       this.$store.dispatch('currency/updateRateData')
     },
-
-    updateBaseCurrencyAmount (newAmount) {
-      this.baseAmount = newAmount
-      this.reCalculateQuote()
+    recalculateBase () {
+      this.baseAmount = this.calcAmount(this.quoteAmount, this.exchangeRateBack, this.exchangeCommissionBack)
+      this.updateBaseAmount = this.baseAmount
     },
-
-    updateBaseCurrencyItem (newCurrencyItem) {
-      this.baseCurrency = newCurrencyItem
-      this.reCalculateQuote()
+    recalculateQuote () {
+      this.quoteAmount = this.calcAmount(this.baseAmount, this.exchangeRateDirect, this.exchangeCommissionDirect)
+      this.updateQuoteAmount = this.quoteAmount
     },
-
-    updateQuoteCurrencyAmount (newAmount) {
-      this.quoteAmount = newAmount
-      this.reCalculateBase()
-    },
-
-    updateQuoteCurrencyItem (newCurrencyItem) {
-      this.quoteCurrency = newCurrencyItem
-      this.reCalculateQuote()
-    },
-
-    reCalculateBase () {
-      this.baseAmount = this.quoteAmount ? this.quoteAmount * this.exchangeRateBack * (1 - this.exchangeCommissionBack/100) : undefined
-    },
-
-    reCalculateQuote () {
-      this.quoteAmount = this.baseAmount ? this.baseAmount * this.exchangeRateDirect * (1 - this.exchangeCommissionDirect/100) : undefined
-    },
-
-    async exchangeCurrency () {
+    exchangeCurrency () {
       const cachedBaseCurrency = this.baseCurrency
       const cachedBaseAmount = this.baseAmount
 
       const cachedQuoteCurrency = this.quoteCurrency
       const cachedQuoteAmount = this.quoteAmount
       
-      this.baseCurrency = null
-      this.quoteCurrency = null
-
-      await this.$nextTick()
+      this.baseAmount = 0
+      this.quoteAmount = 0
 
       this.baseCurrency = cachedQuoteCurrency
-      this.baseAmount = cachedQuoteAmount
-
       this.quoteCurrency = cachedBaseCurrency
+      
+      this.baseAmount = cachedQuoteAmount
+      this.updateBaseAmount = this.baseAmount
+
       this.quoteAmount = cachedBaseAmount
+      this.updateQuoteAmount = this.quoteAmount
+    },
+
+    updateValueBase (value) {
+      this.baseAmount = value
+      this.recalculateQuote()
+    },
+    updateValueQuote (value) {
+      this.quoteAmount = value
+      this.recalculateBase()
+    },
+    exchange () {
+      clearInterval(this.rateUpdateInterval)
+      this.$router.push('/success')
     }
   }
 }
@@ -164,34 +178,28 @@ export default {
 <style lang="scss">
   $brightColor: #2d7efa;
   $borderColor: #ddd;
-
   .crypto-page.container {
     background-color: #f9f9f9;
     margin-top: 50px;
-
     h1 {
       margin-bottom: 20px;
       color: $brightColor;
     }
   }
-
   .crypto-exchange_block_container {
     background-color: #fff;
     padding: 30px;
     border: 1px solid $borderColor;
     margin-bottom: 50px;
-
     h2 {
       border-bottom: 1px solid $borderColor;
       padding-bottom: 10px;
     }
   }
-
   .crypto-exchange_input_block_container,
   .crypto-info_container {
     padding: 10px 0;
   }
-
   .crypto-label {
     margin: 0 0 10px;
     font-weight: bold;
@@ -202,7 +210,6 @@ export default {
     padding: 10px 5px 0;
     margin: 0;
   }
-
   .crypto-info_container {
     .crypto-label_part {
       text-align: left;
@@ -212,7 +219,6 @@ export default {
       font-weight: bold;
     }
   }
-
   .crypto-arrows_icon_container {
     margin: 0;
   }
@@ -226,7 +232,30 @@ export default {
     background-position: center center;
     background-repeat: no-repeat;
     margin: 0;
+    cursor: pointer;
+  }
+
+  .crypto-currency_list {
+    box-shadow: none;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .crypto-currency_list {
+    max-width: 100px;
+    background: $brightColor;
+    color: #fff;
+
+    &:focus {
+      color: #fff;
+      background-color: $brightColor;
+      border-color: $brightColor;
+    }
+  }
+
+  .crypto-button_block {
+    margin-top: 40px;
   }
 </style>
-
-

@@ -9,3 +9,12 @@ body {
 h1, h2, h3, h4 {
     // font-family: 'Work Sans', sans-serif;
 }
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+.page-enter,
+.page-leave-active {
+  opacity: 0;
+}

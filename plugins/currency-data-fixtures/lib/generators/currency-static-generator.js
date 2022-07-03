@@ -12,8 +12,12 @@ export default class CurrencyStaticGenerator {
    */
   static createAllCurrencyPairsCommissions () {
     return this.allCurrencyPairs.map(pair => {
+      const currencies = pair.split('-')
       return {
-        pair, commission: RandomUtility.getRandomFromArray(StaticData.commissionsPercent)
+        pair, 
+        base_currency: currencies[0],
+        quote_currency: currencies[1],
+        commission: RandomUtility.getRandomFromArray(StaticData.commissionsPercent)
       }
     })
   }

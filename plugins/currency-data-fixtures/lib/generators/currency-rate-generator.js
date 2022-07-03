@@ -9,11 +9,23 @@ export default class CurrencyRateGenerator {
    * @returns Array[{ pair: String, rate: Number }]
    */
   static createAllCurrencyRates () {
-    return CurrencyPair.createAllPairs().map(pair => {
-      return {
-        pair, rate: RandomUtility.getRandomFromRange(StaticData.minRate, StaticData.maxRate)
-      }
+    let finalResult = []
+    CurrencyPair.createAllUniquePairs().forEach(pair => {
+      const directRate = RandomUtility.getRandomFromRange(StaticData.minRate, StaticData.maxRate)
+
+      finalResult.push({
+        pair, rate: directRate
+      })
+      
+      const backPair = CurrencyPair.reversePair(pair)
+      const backRate = parseFloat((1/directRate * RandomUtility.getRandomFromRange(1, 10)).toFixed(4))
+      finalResult.push({
+        pair: backPair, rate: backRate
+      })
+
     })
+
+    return finalResult
   }
 
 }

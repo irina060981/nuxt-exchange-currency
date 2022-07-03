@@ -9,6 +9,10 @@ export default ({ app }, inject) => {
   inject('currencyDataFixtures', {
     currencyData: moduleC.currencyData,
     availableCurrency: moduleC.availableCurrency,
+    allCurrencyPairsCommissions: moduleC.allCurrencyPairsCommissions,
+
+    recalcCurrencyPairsCommission: moduleC.recalcCurrencyPairsCommission,
+
     updateRateData: moduleC.updateRateData.bind(moduleC),
     formatCurrencyToPair: moduleC.formatCurrencyToPair.bind(moduleC)
   })

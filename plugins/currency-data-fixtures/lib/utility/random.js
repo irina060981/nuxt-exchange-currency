@@ -6,7 +6,7 @@ export default class RandomUtility {
 
   static getRandomFromRange (min, max) {
     const delta = max - min
-    const initialRandom = Math.random()
+    const initialRandom = Math.random()+1
     const multiplied = initialRandom * delta
     const floored = Math.floor(multiplied)
     

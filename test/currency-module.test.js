@@ -19,8 +19,6 @@ describe('currency-data-fixtures functions', () => {
     const currencyPairs = CurrencyStaticGenerator.allCurrencyPairs
     const currencyPairsCom = CurrencyStaticGenerator.allCurrencyPairsCommissions
 
-    // console.info('currencyPairsCom - ', currencyPairsCom)
-
     expect(currencyPairsCom.length).toEqual(currencyPairs.length)
     
     currencyPairsCom.forEach(pairCom => 
@@ -34,7 +32,6 @@ describe('currency-data-fixtures functions', () => {
   it('3. CurrencyRateGenerator.getAllCurrencyRates returns correct amount of pairs', () => {
     const currencyPairs = CurrencyStaticGenerator.allCurrencyPairs
     const currencyPairsRate = CurrencyRateGenerator.createAllCurrencyRates()
-    // console.info('currencyPairsRate - ', currencyPairsRate)
     
     expect(currencyPairsRate.length).toEqual(currencyPairs.length)
 
@@ -51,8 +48,6 @@ describe('currency-data-fixtures functions', () => {
     moduleC.initCurrencyData()
 
     moduleC.updateRateData()
-
-    console.info('moduleC - ', moduleC.currencyList)
   })
   
   
