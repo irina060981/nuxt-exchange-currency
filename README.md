@@ -22,9 +22,32 @@ Static data are collected in one file - `\plugins\currency-data-fixtures\static-
   - **maxRate** - maximum rate for the rate's delta
   - **rateUpdateIntervalMs** - interval for rates update (ms)
 
+## Build Setup
+
+```bash
+# install dependencies
+$ npm install
+
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+$ npm run start
+
+# generate static project
+$ npm run generate
+```
+
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+
 ## Screenshots
+
+<img src="https://your-image-url.type" width="600">
 
 ![Starting](/_images/index-page-empty.png)
 ![Index with data](/_images/index-page.png)
 ![Success page](/_images/success-page.png)
 ![Success page Empty](/_images/success-page-no-data.png)
+
+
