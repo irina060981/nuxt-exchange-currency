@@ -7,7 +7,10 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "test": "jest"
+    "test": "jest",
+    "test-a": "jest tests/components/currency-input.test.js",
+    "test-b": "jest tests/components/currency-exchange-block.test.js",
+    "test-c": "jest tests/pages/success.test.js"    
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",

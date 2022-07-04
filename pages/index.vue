@@ -6,7 +6,7 @@
     CurrencyExchangeBlock
 
     p.crypto-line-link(@click="showCheckData = !showCheckData") See generated data structures
-    CheckData(v-show = "showCheckData")
+    CheckDataBlock(v-show = "showCheckData")
 </template>
 
 <script>

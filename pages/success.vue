@@ -1,53 +1,30 @@
 <template lang="pug">
-  div.crypto-page.crypto-page-success.container.text-center
-    div.card.card-success.mx-auto
-      div.card-header
-        div.crypto-checkmark
-          i.checkmark ✓
-      div.card-body
-        h1 Success
-        h3 Your exchange<br />was done!    
+  div.container 
+    SuccessExchangeBlock( v-if="successPageAvailable" )
+
+    div.crypto-page.crypto-page-no-success.container.text-center( v-if="!successPageAvailable" )
+      div.card.card-success.mx-auto
+        div.card-header
+          h1 You need to do exchange first         
+        div.card-footer
+          p.crypto-button_block
+              button.btn.btn-primary.btn-block(@click="backToExchange") Exchange
 </template>
 
 <script>
 
 export default {
   name: 'SuccessPage',
-  data () {
-    return {
-      showCheckData: false
+  computed: {
+    successPageAvailable () {
+      return this.$store.state.currency.successPageAvailable
+    }
+  },
+  methods: {
+    backToExchange () {
+      this.$router.push('/')
     }
   }
 }
 </script>
-<style lang="scss">
-  $brightColor: #2d7efa;
 
-  .crypto-page.crypto-page-success {
-    margin-top: 150px;
-  }
-
-  .card.card-success {
-    width: 300px;
-
-    .card-header {
-      background-color: #fff;
-    }
-  }
-
-  .crypto-checkmark {
-    border-radius:200px; 
-    height:200px; 
-    width:200px; 
-    background: #2d7efa; 
-    margin:0 auto;
-
-    i {
-        color: #fff;
-        font-size: 100px;
-        line-height: 200px;
-        margin-left:-15px;
-    }
-  }
-
-</style>

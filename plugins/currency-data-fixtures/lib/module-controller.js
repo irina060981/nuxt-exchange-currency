@@ -11,12 +11,12 @@ export default class ModuleController {
   /**
    * @constructor
   */
-  constructor (moduleObj) {
+  constructor () {
     this.currencyData = null
   }
 
   /**
-   * Creates this.currencyData with pairs and commissions data
+   * Creates this.currencyData with pairs and commissions info
    */
   initCurrencyData () {
     this.currencyData = {}
@@ -29,7 +29,8 @@ export default class ModuleController {
   }
 
   /**
-   * Updates this.currencyData with rate data
+   * Updates this.currencyData with rates info
+   * Caches to lastUsedRates (would be changed on next rates update)
   */
   updateRateData () {
     const rateData = CurrencyRateGenerator.createAllCurrencyRates()
@@ -45,22 +46,41 @@ export default class ModuleController {
     lastUsedRates = rateData
   }
 
+  /**
+   * @returns Array[String] - all currencies
+   */
   get availableCurrency () {
     return StaticData.currencyArray
   }
 
+  /**
+   * Creates formalized currency pair string
+   * @param {String} baseCur 
+   * @param {String} quoteCur 
+   * @returns {String}
+   */
   formatCurrencyToPair (baseCur, quoteCur) {
     return CurrencyPair.formatPairName (baseCur, quoteCur)
   }
 
-  // for check page
+  /**
+   * Used for check component
+   * @returns Array[{ pair: String, base_currency: String, quote_currency: String, commission: Number }]
+   */
   get allCurrencyPairsCommissions () {
     return CurrencyStaticGenerator.allCurrencyPairsCommissions
   }
 
-  // for check page
-  get recalcCurrencyPairsCommission () {
+  /**
+   * Used for check component
+   * @returns Object{ pair: CurrencyPair }
+   */
+  get lastUsedCurrencyRateData () {
     return lastUsedRates
+  }
+
+  get rateUpdateIntervalMs () {
+    return StaticData.rateUpdateIntervalMs
   }
  
 }

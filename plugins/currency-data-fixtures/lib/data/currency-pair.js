@@ -17,24 +17,34 @@ export default class CurrencyPair {
     this.quoteCurrency = currencies[1]
   }
 
+  /**
+   * Updates commision of the pair
+   * @param {Number} commission 
+   */
   setCommission (commission) {
     this.commission = commission
   }
 
+  /**
+   * Updates rate of the pair
+   * @param {Number} rate 
+   */
   setRate (rate) {
     this.rate = rate
   }
 
+  /**
+   * Formalize pair to string (usage for the keys)
+   * @param {String} baseCur 
+   * @param {String} quoteCur 
+   * @returns String
+   */
   static formatPairName (baseCur, quoteCur) {
     return `${baseCur}-${quoteCur}`
   }
 
-  get shortName () {
-    return CurrencyPair.formatPairName(this.baseCurrency, this.quoteCurrency)
-  }
-
   /**
-   * Creates an array of currency pairs in format like USD-JPY
+   * Creates an array of all available currency pairs in format like USD-JPY
    * @returns Array[String]
    */
   static createAllPairs () {
@@ -55,6 +65,10 @@ export default class CurrencyPair {
     return result
   }
 
+  /**
+   * Creates an array of all unique currency pairs in format like USD-JPY
+   * @returns Array[String]
+   */
   static createAllUniquePairs () {
     const allCur = StaticData.currencyArray
 
@@ -63,6 +77,11 @@ export default class CurrencyPair {
     [])
   }
 
+  /**
+   * 
+   * @param {String} pair 
+   * @returns String - reversed formalized pair
+   */
   static reversePair (pair) {
     const currencies = pair.split('-').reverse()    
     return this.formatPairName(currencies[0], currencies[1])

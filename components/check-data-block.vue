@@ -15,7 +15,7 @@
 <script>
 
 export default {
-  name: 'CheckData',
+  name: 'CheckDataBlock',
   data () {
     return {
       sectionsShow: [ false, false, false ]
@@ -29,7 +29,7 @@ export default {
       return this.$store.state.currency.updated ? this.$currencyDataFixtures.allCurrencyPairsCommissions : {}
     },
     currencyRate () {
-      return this.$store.state.currency.updated ? this.$currencyDataFixtures.recalcCurrencyPairsCommission : {}
+      return this.$store.state.currency.updated ? this.$currencyDataFixtures.lastUsedCurrencyRateData : {}
     }
   },
   methods: {

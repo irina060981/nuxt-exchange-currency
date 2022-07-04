@@ -5,7 +5,8 @@ import CurrencyPair from './../data/currency-pair.js'
 export default class CurrencyRateGenerator {
 
   /**
-   * Creates an object, that stores all currency pairs with rate
+   * Creates an object, that stores all currency pairs with rate,
+   * direct pairs has a randomly generated rate, back pair has 1/direct rate value
    * @returns Array[{ pair: String, rate: Number }]
    */
   static createAllCurrencyRates () {
@@ -16,9 +17,9 @@ export default class CurrencyRateGenerator {
       finalResult.push({
         pair, rate: directRate
       })
-      
+
       const backPair = CurrencyPair.reversePair(pair)
-      const backRate = parseFloat((1/directRate * RandomUtility.getRandomFromRange(1, 10)).toFixed(4))
+      const backRate = parseFloat((1/directRate).toFixed(4))
       finalResult.push({
         pair: backPair, rate: backRate
       })

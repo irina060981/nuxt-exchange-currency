@@ -1,21 +1,31 @@
 import ModuleController from './lib/module-controller.js'
 
-export default ({ app }, inject) => {
+export default ( _, inject) => {
+
   let moduleC = new ModuleController(this)
 
   moduleC.initCurrencyData()
   moduleC.updateRateData()
 
-  inject('currencyDataFixtures', {
+  const injectData = {
     currencyData: moduleC.currencyData,
     availableCurrency: moduleC.availableCurrency,
+    rateUpdateIntervalMs: moduleC.rateUpdateIntervalMs,
+    
     allCurrencyPairsCommissions: moduleC.allCurrencyPairsCommissions,
 
-    recalcCurrencyPairsCommission: moduleC.recalcCurrencyPairsCommission,
+    lastUsedCurrencyRateData: moduleC.lastUsedCurrencyRateData,
 
     updateRateData: moduleC.updateRateData.bind(moduleC),
     formatCurrencyToPair: moduleC.formatCurrencyToPair.bind(moduleC)
-  })
+  }
+
+  if (inject) {
+    inject('currencyDataFixtures', injectData)
+    return
+  }
+  return injectData
+
 }
 
 
