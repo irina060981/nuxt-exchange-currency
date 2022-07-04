@@ -43,11 +43,12 @@ For detailed explanation on how things work, check out the [documentation](https
 
 ## Screenshots
 
-<img src="https://your-image-url.type" width="600">
-
 ![Starting](/_images/index-page-empty.png)
+
 ![Index with data](/_images/index-page.png)
+
 ![Success page](/_images/success-page.png)
+
 ![Success page Empty](/_images/success-page-no-data.png)
 
 
